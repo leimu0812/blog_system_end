@@ -1,6 +1,7 @@
 package org.dromara.blog.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.dromara.blog.domain.vo.TSiteStatsVo;
 import org.dromara.blog.domain.vo.TSocialLinksVo;
 import org.dromara.blog.domain.vo.TTagsVo;
 import org.dromara.blog.domain.vo.TUserInfoVo;
@@ -56,5 +57,10 @@ public class BlogController extends BaseController {
     @GetMapping("/tags")
     public R<List<TTagsVo>> getTags() {
         return R.ok(blogVueService.getTags());
+    }
+
+    @GetMapping("/siteStats")
+    public R<List<TSiteStatsVo>> getSiteStats() {
+        return R.ok(blogVueService.getSiteStats());
     }
 }

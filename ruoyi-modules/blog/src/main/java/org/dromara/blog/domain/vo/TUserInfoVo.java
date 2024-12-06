@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * 信息管理视图对象 t_user_info
  *
- * @author Lion Li
+ * @author LiuJinYu
  * @date 2024-12-05
  */
 @Data

@@ -1,9 +1,11 @@
 package org.dromara.blog.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.dromara.blog.domain.vo.TSiteStatsVo;
 import org.dromara.blog.domain.vo.TSocialLinksVo;
 import org.dromara.blog.domain.vo.TTagsVo;
 import org.dromara.blog.domain.vo.TUserInfoVo;
+import org.dromara.blog.mapper.TSiteStatsMapper;
 import org.dromara.blog.mapper.TSocialLinksMapper;
 import org.dromara.blog.mapper.TTagsMapper;
 import org.dromara.blog.mapper.TUserInfoMapper;
@@ -19,6 +21,7 @@ public class BlogVueServiceImpl implements BlogVueService {
     private final TUserInfoMapper tUserInfoMapper;
     private final TSocialLinksMapper tSocialLinksMapper;
     private final TTagsMapper tTagsMapper;
+    private final TSiteStatsMapper tSiteStatsMapper;
 
     /**
      * 获取信息
@@ -49,5 +52,10 @@ public class BlogVueServiceImpl implements BlogVueService {
     @Override
     public List<TTagsVo> getTags() {
         return tTagsMapper.getTags();
+    }
+
+    @Override
+    public List<TSiteStatsVo> getSiteStats() {
+        return tSiteStatsMapper.getSiteStats();
     }
 }

@@ -1,5 +1,7 @@
 package org.dromara.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.dromara.blog.mapper.TSiteStatsMapper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -30,6 +32,7 @@ import java.util.Collection;
 public class TTagsServiceImpl implements ITTagsService {
 
     private final TTagsMapper baseMapper;
+    private final TSiteStatsMapper siteStatsMapper;
 
     /**
      * 查询文章标签管理
@@ -38,7 +41,7 @@ public class TTagsServiceImpl implements ITTagsService {
      * @return 文章标签管理
      */
     @Override
-    public TTagsVo queryById(Long id){
+    public TTagsVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -89,6 +92,10 @@ public class TTagsServiceImpl implements ITTagsService {
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
+            // 标签新增成功，计数，统计数量表对应的内容添加
+            QueryWrapper<TTags> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("status", 1);
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper));
         }
         return flag;
     }
@@ -109,8 +116,8 @@ public class TTagsServiceImpl implements ITTagsService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(TTags entity){
-        //TODO 做一些数据校验,如唯一约束
+    private void validEntityBeforeSave(TTags entity) {
+        // TODO 做一些数据校验,如唯一约束
     }
 
     /**
@@ -122,8 +129,8 @@ public class TTagsServiceImpl implements ITTagsService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
+        if (isValid) {
+            // TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
     }

@@ -12,7 +12,7 @@ import java.io.Serial;
 /**
  * 社交链接管理对象 t_social_links
  *
- * @author Lion Li
+ * @author LiuJinYu
  * @date 2024-12-06
  */
 @Data

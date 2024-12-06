@@ -4,57 +4,42 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.common.translation.annotation.Translation;
+
 import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.common.translation.constant.TransConstant;
 
 import java.io.Serial;
 
 /**
- * 信息管理对象 t_user_info
+ * 网站统计对象 t_site_stats
  *
  * @author LiuJinYu
- * @date 2024-12-05
+ * @date 2024-12-07
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("t_user_info")
-public class TUserInfo {
+@TableName("t_site_stats")
+public class TSiteStats {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * 主键ID
      */
     @TableId(value = "id")
     private Long id;
 
     /**
-     * 用户名
+     * 统计项名称
      */
-    private String username;
+    private String name;
 
     /**
-     * 昵称
+     * 统计值
      */
-    private String nickname;
-
-    /**
-     * 头像
-     */
-    private String avatar;
-
-    /**
-     * 座右铭
-     */
-    private String motto;
-
-    /**
-     * 状态
-     */
-    private String status;
+    private Long value;
 
     /**
      * 创建时间
