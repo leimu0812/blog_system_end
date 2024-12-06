@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.blog.mapper.TTagsMapper">
+
+    <select id="getTags" resultType="org.dromara.blog.domain.vo.TTagsVo">
+        select id, name, type, count, status
+        from t_tags
+        where status = '1'
+        order by count desc
+    </select>
+    <select id="countAll" resultType="Long">
+        select count(id) from t_tags
+        where status = '1'
+    </select>
+</mapper>

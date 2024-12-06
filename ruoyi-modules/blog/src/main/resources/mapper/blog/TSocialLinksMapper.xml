@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.blog.mapper.TSocialLinksMapper">
+
+    <select id="getSocialLink" resultType="org.dromara.blog.domain.vo.TSocialLinksVo">
+        SELECT icon, title, url, status
+        FROM t_social_links
+        where status = '1'
+    </select>
+</mapper>

@@ -2,6 +2,14 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.dromara.system.mapper.TUserInfoMapper">
+<mapper namespace="org.dromara.blog.mapper.TUserInfoMapper">
 
+    <select id="getInfo" resultType="org.dromara.blog.domain.vo.TUserInfoVo">
+        SELECT username,
+               avatar,
+               motto,
+               status
+        FROM t_user_info
+        WHERE status = '1'
+    </select>
 </mapper>

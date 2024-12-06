@@ -13,4 +13,5 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
  */
 public interface TUserInfoMapper extends BaseMapperPlus<TUserInfo, TUserInfoVo> {
 
+    TUserInfoVo getInfo();
 }
