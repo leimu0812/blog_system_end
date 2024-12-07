@@ -36,6 +36,11 @@ public class TTagsController extends BaseController {
 
     private final ITTagsService tTagsService;
 
+    @GetMapping("/articlesSelect")
+    public R<List<TTagsVo>> articlesSelect() {
+        return R.ok(tTagsService.selectStatusTags());
+    }
+
     /**
      * 查询文章标签管理列表
      */

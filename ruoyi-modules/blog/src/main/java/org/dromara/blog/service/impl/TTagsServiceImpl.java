@@ -134,4 +134,14 @@ public class TTagsServiceImpl implements ITTagsService {
         }
         return baseMapper.deleteByIds(ids) > 0;
     }
+
+    /**
+     * 查询状态为1的标签
+     *
+     * @return
+     */
+    @Override
+    public List<TTagsVo> selectStatusTags() {
+        return baseMapper.getTags();
+    }
 }

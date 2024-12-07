@@ -65,4 +65,11 @@ public interface ITTagsService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 查询状态标签
+     *
+     * @return
+     */
+    List<TTagsVo> selectStatusTags();
 }
