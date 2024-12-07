@@ -76,5 +76,7 @@ public class TArticlesBo extends BaseEntity {
      */
     private Date createdAt;
 
+    private String[] tags;
+
 
 }

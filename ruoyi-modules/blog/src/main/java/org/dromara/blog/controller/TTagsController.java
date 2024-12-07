@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
@@ -28,6 +29,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
  * @author LiuJinYu
  * @date 2024-12-06
  */
+@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -69,7 +71,7 @@ public class TTagsController extends BaseController {
     @SaCheckPermission("blog:tags:query")
     @GetMapping("/{id}")
     public R<TTagsVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                              @PathVariable Long id) {
         return R.ok(tTagsService.queryById(id));
     }
 

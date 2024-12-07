@@ -1,5 +1,10 @@
 package org.dromara.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.dromara.blog.domain.TArticleTags;
+import org.dromara.blog.mapper.TArticleTagsMapper;
+import org.dromara.blog.mapper.TSiteStatsMapper;
+import org.dromara.blog.mapper.TTagsMapper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -15,6 +20,7 @@ import org.dromara.blog.domain.TArticles;
 import org.dromara.blog.mapper.TArticlesMapper;
 import org.dromara.blog.service.ITArticlesService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -30,6 +36,9 @@ import java.util.Collection;
 public class TArticlesServiceImpl implements ITArticlesService {
 
     private final TArticlesMapper baseMapper;
+    private final TArticleTagsMapper articleTagsMapper;
+    private final TTagsMapper tagsMapper;
+
 
     /**
      * 查询文章管理
@@ -38,7 +47,7 @@ public class TArticlesServiceImpl implements ITArticlesService {
      * @return 文章管理
      */
     @Override
-    public TArticlesVo queryById(Long id){
+    public TArticlesVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -94,6 +103,19 @@ public class TArticlesServiceImpl implements ITArticlesService {
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
+            // 将新增的文章id添加到标签文章关联表中
+            for (String tag : bo.getTags()) {
+                TArticleTags articleTags = new TArticleTags();
+                articleTags.setArticleId(add.getId());
+                articleTags.setTagId(Long.parseLong(tag));
+                articleTagsMapper.insert(articleTags);
+                // 查询文章标签表的标签id数量，统计数量表对应的内容添加
+                QueryWrapper<TArticleTags> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("tag_id", Long.parseLong(tag));
+                Long l = articleTagsMapper.selectCount(queryWrapper);
+                tagsMapper.updateCount(Long.parseLong(tag), l);
+            }
+
         }
         return flag;
     }
@@ -108,14 +130,28 @@ public class TArticlesServiceImpl implements ITArticlesService {
     public Boolean updateByBo(TArticlesBo bo) {
         TArticles update = MapstructUtils.convert(bo, TArticles.class);
         validEntityBeforeSave(update);
+        // 将文章id删除标签文章关联表中
+        articleTagsMapper.delete(Wrappers.<TArticleTags>lambdaQuery().eq(TArticleTags::getArticleId, update.getId()));
+        // 将新增的文章id添加到标签文章关联表中
+        for (String tag : bo.getTags()) {
+            TArticleTags articleTags = new TArticleTags();
+            articleTags.setArticleId(update.getId());
+            articleTags.setTagId(Long.parseLong(tag));
+            articleTagsMapper.insert(articleTags);
+            // 查询文章标签表的标签id数量，统计数量表对应的内容添加
+            QueryWrapper<TArticleTags> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("tag_id", Long.parseLong(tag));
+            Long l = articleTagsMapper.selectCount(queryWrapper);
+            tagsMapper.updateCount(Long.parseLong(tag), l);
+        }
         return baseMapper.updateById(update) > 0;
     }
 
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(TArticles entity){
-        //TODO 做一些数据校验,如唯一约束
+    private void validEntityBeforeSave(TArticles entity) {
+        // TODO 做一些数据校验,如唯一约束
     }
 
     /**
@@ -127,8 +163,8 @@ public class TArticlesServiceImpl implements ITArticlesService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
+        if (isValid) {
+            // TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteByIds(ids) > 0;
     }
