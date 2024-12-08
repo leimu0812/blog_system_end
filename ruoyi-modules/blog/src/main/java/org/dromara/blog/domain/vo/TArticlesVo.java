@@ -1,5 +1,6 @@
 package org.dromara.blog.domain.vo;
 
+import org.dromara.blog.domain.TTags;
 import org.dromara.common.translation.annotation.Translation;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -112,7 +114,5 @@ public class TArticlesVo implements Serializable {
     @ExcelProperty(value = "更新时间")
     private Date updatedAt;
 
-    private String[] tags;
-
-
+    private List<TTags> tags;
 }

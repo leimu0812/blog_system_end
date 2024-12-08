@@ -2,8 +2,8 @@ package org.dromara.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.dromara.blog.domain.TArticleTags;
+import org.dromara.blog.domain.TTags;
 import org.dromara.blog.mapper.TArticleTagsMapper;
-import org.dromara.blog.mapper.TSiteStatsMapper;
 import org.dromara.blog.mapper.TTagsMapper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -20,10 +20,8 @@ import org.dromara.blog.domain.TArticles;
 import org.dromara.blog.mapper.TArticlesMapper;
 import org.dromara.blog.service.ITArticlesService;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 文章管理Service业务层处理
@@ -48,7 +46,21 @@ public class TArticlesServiceImpl implements ITArticlesService {
      */
     @Override
     public TArticlesVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
+        TArticlesVo articleVo = baseMapper.selectVoById(id);
+
+        // 查询与文章关联的标签
+        List<TArticleTags> articleTags = articleTagsMapper.selectList(new QueryWrapper<TArticleTags>().eq("article_id", id));
+        List<TTags> tags = new ArrayList<>();
+
+        for (TArticleTags articleTag : articleTags) {
+            // 假设 tagsMapper 有方法可以根据 ID 查询标签名称
+            TTags tag = tagsMapper.selectById(articleTag.getTagId());
+            if (tag != null) {
+                tags.add(tag); // 添加标签对象到列表
+            }
+        }
+        articleVo.setTags(tags); // 设置标签信息
+        return articleVo;
     }
 
     /**
@@ -62,6 +74,20 @@ public class TArticlesServiceImpl implements ITArticlesService {
     public TableDataInfo<TArticlesVo> queryPageList(TArticlesBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<TArticles> lqw = buildQueryWrapper(bo);
         Page<TArticlesVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+
+        // 查询每篇文章的标签信息
+        for (TArticlesVo articleVo : result.getRecords()) {
+            List<TArticleTags> articleTags = articleTagsMapper.selectList(new QueryWrapper<TArticleTags>().eq("article_id", articleVo.getId()));
+            List<TTags> tags = new ArrayList<>();
+
+            for (TArticleTags articleTag : articleTags) {
+                TTags tag = tagsMapper.selectById(articleTag.getTagId());
+                if (tag != null) {
+                    tags.add(tag);
+                }
+            }
+            articleVo.setTags(tags); // 设置标签信息
+        }
         return TableDataInfo.build(result);
     }
 

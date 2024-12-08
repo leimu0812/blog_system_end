@@ -1,12 +1,12 @@
 package org.dromara.blog.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.dromara.blog.domain.vo.TSiteStatsVo;
-import org.dromara.blog.domain.vo.TSocialLinksVo;
-import org.dromara.blog.domain.vo.TTagsVo;
-import org.dromara.blog.domain.vo.TUserInfoVo;
+import org.dromara.blog.domain.bo.TArticlesBo;
+import org.dromara.blog.domain.vo.*;
 import org.dromara.blog.service.BlogVueService;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,8 +59,18 @@ public class BlogController extends BaseController {
         return R.ok(blogVueService.getTags());
     }
 
+    /**
+     * 获取站点统计数据
+     *
+     * @return
+     */
     @GetMapping("/siteStats")
     public R<List<TSiteStatsVo>> getSiteStats() {
         return R.ok(blogVueService.getSiteStats());
+    }
+
+    @GetMapping("/articleList")
+    public R<TableDataInfo<TArticlesVo>> getArticles(TArticlesBo bo, PageQuery pageQuery) {
+        return R.ok(blogVueService.getArticles(bo, pageQuery));
     }
 }
