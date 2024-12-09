@@ -17,5 +17,7 @@ public interface BlogVueService {
 
     List<TSiteStatsVo> getSiteStats();
 
-    TableDataInfo<TArticlesVo> getArticles(TArticlesBo bo, PageQuery pageQuery);
+    TableDataInfo<TArticlesVo> getArticlesList(TArticlesBo bo, PageQuery pageQuery);
+
+    TArticlesVo getArticleDetail(Long id);
 }

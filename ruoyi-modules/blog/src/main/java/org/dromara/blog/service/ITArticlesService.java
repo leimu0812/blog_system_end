@@ -65,4 +65,14 @@ public interface ITArticlesService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * blog端文章列表展示
+     * @param bo
+     * @return
+     */
+    TableDataInfo<TArticlesVo> getArticlesList(TArticlesBo bo, PageQuery pageQuery);
+
+
+    TArticlesVo getArticleDetail(Long id);
 }

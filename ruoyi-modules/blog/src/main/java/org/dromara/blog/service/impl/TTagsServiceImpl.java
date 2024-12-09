@@ -2,6 +2,7 @@ package org.dromara.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.dromara.blog.mapper.TSiteStatsMapper;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -95,7 +96,7 @@ public class TTagsServiceImpl implements ITTagsService {
             // 标签新增成功，计数，统计数量表对应的内容添加
             QueryWrapper<TTags> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("status", 1);
-            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper));
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper),"标签");
         }
         return flag;
     }
@@ -129,10 +130,13 @@ public class TTagsServiceImpl implements ITTagsService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if (isValid) {
-            // TODO 做一些业务上的校验,判断是否需要校验
+        Boolean flag = baseMapper.deleteByIds(ids) > 0;
+        if (flag) {
+            QueryWrapper<TTags> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("status", 1);
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper),"标签");
         }
-        return baseMapper.deleteByIds(ids) > 0;
+        return flag;
     }
 
     /**

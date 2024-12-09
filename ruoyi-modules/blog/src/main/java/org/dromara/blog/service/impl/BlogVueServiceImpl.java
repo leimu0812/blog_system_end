@@ -72,7 +72,12 @@ public class BlogVueServiceImpl implements BlogVueService {
      * @return
      */
     @Override
-    public TableDataInfo<TArticlesVo> getArticles(TArticlesBo bo, PageQuery pageQuery) {
-        return tArticlesService.queryPageList(bo, pageQuery);
+    public TableDataInfo<TArticlesVo> getArticlesList(TArticlesBo bo, PageQuery pageQuery) {
+        return tArticlesService.getArticlesList(bo, pageQuery);
+    }
+
+    @Override
+    public TArticlesVo getArticleDetail(Long id) {
+        return tArticlesService.getArticleDetail(id);
     }
 }

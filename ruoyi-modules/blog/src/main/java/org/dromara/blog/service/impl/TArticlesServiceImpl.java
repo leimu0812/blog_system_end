@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.dromara.blog.domain.TArticleTags;
 import org.dromara.blog.domain.TTags;
 import org.dromara.blog.mapper.TArticleTagsMapper;
+import org.dromara.blog.mapper.TSiteStatsMapper;
 import org.dromara.blog.mapper.TTagsMapper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -21,7 +22,6 @@ import org.dromara.blog.mapper.TArticlesMapper;
 import org.dromara.blog.service.ITArticlesService;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 文章管理Service业务层处理
@@ -36,10 +36,52 @@ public class TArticlesServiceImpl implements ITArticlesService {
     private final TArticlesMapper baseMapper;
     private final TArticleTagsMapper articleTagsMapper;
     private final TTagsMapper tagsMapper;
+    private final TSiteStatsMapper siteStatsMapper;
 
+    @Override
+    public TArticlesVo getArticleDetail(Long id) {
+        TArticlesVo articleVo = baseMapper.selectVoById(id);
+        if (articleVo != null) {
+            // 查询文章标签
+            List<TArticleTags> articleTags = articleTagsMapper.selectList(new QueryWrapper<TArticleTags>().eq("article_id", id));
+            List<TTags> tags = new ArrayList<>();
+
+            for (TArticleTags articleTag : articleTags) {
+                TTags tag = tagsMapper.selectById(articleTag.getTagId());
+                if (tag != null) {
+                    tags.add(tag);
+                }
+           }
+        }
+        return articleVo;
+    }
+
+    @Override
+    public TableDataInfo<TArticlesVo> getArticlesList(TArticlesBo bo, PageQuery pageQuery) {
+        LambdaQueryWrapper<TArticles> lqw = new LambdaQueryWrapper<>();
+        // 模糊查询文章标题，并且查询文章状态为1
+        lqw.like(StringUtils.isNotBlank(bo.getTitle()), TArticles::getTitle, bo.getTitle())
+            .eq(TArticles::getStatus, 1);
+        // 分页查询
+        Page<TArticlesVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        // 查询每篇文章的标签信息
+        for (TArticlesVo articleVo : result.getRecords()) {
+            List<TArticleTags> articleTags = articleTagsMapper.selectList(new QueryWrapper<TArticleTags>().eq("article_id", articleVo.getId()));
+            List<TTags> tags = new ArrayList<>();
+
+            for (TArticleTags articleTag : articleTags) {
+                TTags tag = tagsMapper.selectById(articleTag.getTagId());
+                if (tag != null) {
+                    tags.add(tag);
+                }
+            }
+            articleVo.setTags(tags); // 设置标签信息
+        }
+        return TableDataInfo.build(result);
+    }
 
     /**
-     * 查询文章管理
+     * 查询文章信息
      *
      * @param id 主键
      * @return 文章管理
@@ -141,6 +183,10 @@ public class TArticlesServiceImpl implements ITArticlesService {
                 Long l = articleTagsMapper.selectCount(queryWrapper);
                 tagsMapper.updateCount(Long.parseLong(tag), l);
             }
+            // 查询文章总数量，统计到统计表中
+            QueryWrapper<TArticles> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("status", 1);
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper),"文章");
 
         }
         return flag;
@@ -190,8 +236,18 @@ public class TArticlesServiceImpl implements ITArticlesService {
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
-            // TODO 做一些业务上的校验,判断是否需要校验
+
         }
-        return baseMapper.deleteByIds(ids) > 0;
+        // 遍历ids，在文章标签关联表中删除对应的数据
+        for (Long id : ids) {
+            articleTagsMapper.delete(Wrappers.<TArticleTags>lambdaQuery().eq(TArticleTags::getArticleId, id));
+        }
+        Boolean flag = baseMapper.deleteByIds(ids) > 0;
+        if (flag){
+            QueryWrapper<TArticles> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("status", 1);
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper),"文章");
+        }
+        return flag;
     }
 }

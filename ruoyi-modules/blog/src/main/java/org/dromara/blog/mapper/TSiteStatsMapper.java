@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2024-12-07
  */
 public interface TSiteStatsMapper extends BaseMapperPlus<TSiteStats, TSiteStatsVo> {
-    void updateTagNumber(@Param("aLong") Long aLong);
+    void updateTagNumber(@Param("aLong") Long aLong, @Param("name") String name);
 
     List<TSiteStatsVo> getSiteStats();
 }

@@ -7,7 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateTagNumber">
         update t_site_stats
         set value = #{aLong}
-        where name = '标签'
+        where name = #{name}
     </update>
     <select id="getSiteStats" resultType="org.dromara.blog.domain.vo.TSiteStatsVo">
         select name, value

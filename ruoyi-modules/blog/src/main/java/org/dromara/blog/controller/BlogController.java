@@ -69,8 +69,25 @@ public class BlogController extends BaseController {
         return R.ok(blogVueService.getSiteStats());
     }
 
+    /**
+     * 获取文章列表
+     *
+     * @param bo
+     * @param pageQuery
+     * @return
+     */
     @GetMapping("/articleList")
-    public R<TableDataInfo<TArticlesVo>> getArticles(TArticlesBo bo, PageQuery pageQuery) {
-        return R.ok(blogVueService.getArticles(bo, pageQuery));
+    public R<TableDataInfo<TArticlesVo>> getArticlesList(TArticlesBo bo, PageQuery pageQuery) {
+        return R.ok(blogVueService.getArticlesList(bo, pageQuery));
+    }
+
+    /**
+     * 获取文章详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/articleDetail")
+    public R<TArticlesVo> getArticleDetail(Long id) {
+        return R.ok(blogVueService.getArticleDetail(id));
     }
 }
