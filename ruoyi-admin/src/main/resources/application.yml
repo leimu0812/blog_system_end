@@ -229,6 +229,7 @@ xss:
     - /system/notice
     - /workflow/model/save
     - /workflow/model/editModelXml
+    - /blog/articles/**
 
 # 全局线程池相关配置
 # 如使用JDK21请直接使用虚拟线程 不要开启此配置

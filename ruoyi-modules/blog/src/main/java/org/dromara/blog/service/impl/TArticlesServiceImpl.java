@@ -45,17 +45,24 @@ public class TArticlesServiceImpl implements ITArticlesService {
             // 查询文章标签
             List<TArticleTags> articleTags = articleTagsMapper.selectList(new QueryWrapper<TArticleTags>().eq("article_id", id));
             List<TTags> tags = new ArrayList<>();
-
             for (TArticleTags articleTag : articleTags) {
                 TTags tag = tagsMapper.selectById(articleTag.getTagId());
                 if (tag != null) {
                     tags.add(tag);
                 }
-           }
+            }
+            articleVo.setTags(tags);
         }
         return articleVo;
     }
 
+    /**
+     * 查询文章列表
+     *
+     * @param bo
+     * @param pageQuery
+     * @return
+     */
     @Override
     public TableDataInfo<TArticlesVo> getArticlesList(TArticlesBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<TArticles> lqw = new LambdaQueryWrapper<>();
@@ -95,7 +102,6 @@ public class TArticlesServiceImpl implements ITArticlesService {
         List<TTags> tags = new ArrayList<>();
 
         for (TArticleTags articleTag : articleTags) {
-            // 假设 tagsMapper 有方法可以根据 ID 查询标签名称
             TTags tag = tagsMapper.selectById(articleTag.getTagId());
             if (tag != null) {
                 tags.add(tag); // 添加标签对象到列表
@@ -186,7 +192,7 @@ public class TArticlesServiceImpl implements ITArticlesService {
             // 查询文章总数量，统计到统计表中
             QueryWrapper<TArticles> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("status", 1);
-            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper),"文章");
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper), "文章");
 
         }
         return flag;
@@ -243,10 +249,10 @@ public class TArticlesServiceImpl implements ITArticlesService {
             articleTagsMapper.delete(Wrappers.<TArticleTags>lambdaQuery().eq(TArticleTags::getArticleId, id));
         }
         Boolean flag = baseMapper.deleteByIds(ids) > 0;
-        if (flag){
+        if (flag) {
             QueryWrapper<TArticles> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("status", 1);
-            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper),"文章");
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper), "文章");
         }
         return flag;
     }

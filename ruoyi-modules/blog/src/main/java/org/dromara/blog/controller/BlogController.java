@@ -10,6 +10,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -86,8 +87,8 @@ public class BlogController extends BaseController {
      * @param id
      * @return
      */
-    @GetMapping("/articleDetail")
-    public R<TArticlesVo> getArticleDetail(Long id) {
+    @GetMapping("/article/{id}")
+    public R<TArticlesVo> getArticleDetail(@PathVariable Long id) {
         return R.ok(blogVueService.getArticleDetail(id));
     }
 }
