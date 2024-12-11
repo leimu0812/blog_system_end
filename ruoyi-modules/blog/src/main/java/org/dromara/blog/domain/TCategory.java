@@ -11,12 +11,12 @@ import java.io.Serial;
  * 文章分类对象 t_category
  *
  * @author LiuJinYu
- * @date 2024-12-09
+ * @date 2024-12-11
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @TableName("t_category")
-public class TCategory extends BaseEntity {
+public class TCategory {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -53,7 +53,7 @@ public class TCategory extends BaseEntity {
     private Long sortOrder;
 
     /**
-     * 状态
+     * 状态（0停用 1正常）
      */
     private String status;
 

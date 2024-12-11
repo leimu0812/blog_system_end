@@ -13,7 +13,7 @@ import jakarta.validation.constraints.*;
  * 文章分类业务对象 t_category
  *
  * @author LiuJinYu
- * @date 2024-12-09
+ * @date 2024-12-11
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -51,9 +51,9 @@ public class TCategoryBo extends BaseEntity {
     private Long sortOrder;
 
     /**
-     * 状态
+     * 状态（0停用 1正常）
      */
-    @NotBlank(message = "状态不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "状态（0停用 1正常）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
 

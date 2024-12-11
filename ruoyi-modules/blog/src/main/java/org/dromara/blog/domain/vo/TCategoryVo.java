@@ -18,7 +18,7 @@ import java.util.Date;
  * 文章分类视图对象 t_category
  *
  * @author LiuJinYu
- * @date 2024-12-09
+ * @date 2024-12-11
  */
 @Data
 @ExcelIgnoreUnannotated
@@ -65,11 +65,23 @@ public class TCategoryVo implements Serializable {
     private Long sortOrder;
 
     /**
-     * 状态
+     * 状态（0停用 1正常）
      */
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "t_show_status")
     private String status;
+
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建时间")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
 
 
 }

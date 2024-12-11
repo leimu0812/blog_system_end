@@ -3,9 +3,7 @@ package org.dromara.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.dromara.blog.domain.TArticleTags;
 import org.dromara.blog.domain.TTags;
-import org.dromara.blog.mapper.TArticleTagsMapper;
-import org.dromara.blog.mapper.TSiteStatsMapper;
-import org.dromara.blog.mapper.TTagsMapper;
+import org.dromara.blog.mapper.*;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.dromara.blog.domain.bo.TArticlesBo;
 import org.dromara.blog.domain.vo.TArticlesVo;
 import org.dromara.blog.domain.TArticles;
-import org.dromara.blog.mapper.TArticlesMapper;
 import org.dromara.blog.service.ITArticlesService;
 
 import java.util.*;
@@ -37,6 +34,7 @@ public class TArticlesServiceImpl implements ITArticlesService {
     private final TArticleTagsMapper articleTagsMapper;
     private final TTagsMapper tagsMapper;
     private final TSiteStatsMapper siteStatsMapper;
+    private final TCategoryMapper categoryMapper;
 
     @Override
     public TArticlesVo getArticleDetail(Long id) {
@@ -193,7 +191,10 @@ public class TArticlesServiceImpl implements ITArticlesService {
             QueryWrapper<TArticles> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("status", 1);
             siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper), "文章");
-
+            // 获取分类名称，统计该分类名称数量
+            String category = bo.getCategory();
+            Long i = baseMapper.selectCategoryCount(category);
+            categoryMapper.updateArticleCount(category, i);
         }
         return flag;
     }

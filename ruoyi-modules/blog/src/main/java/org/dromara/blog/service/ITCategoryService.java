@@ -12,7 +12,7 @@ import java.util.List;
  * 文章分类Service接口
  *
  * @author LiuJinYu
- * @date 2024-12-09
+ * @date 2024-12-11
  */
 public interface ITCategoryService {
 
@@ -65,4 +65,6 @@ public interface ITCategoryService {
      * @return 是否删除成功
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    List<TCategoryVo> articlesSelect();
 }

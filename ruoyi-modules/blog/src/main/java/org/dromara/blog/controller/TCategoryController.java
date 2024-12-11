@@ -26,7 +26,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
  * 文章分类
  *
  * @author LiuJinYu
- * @date 2024-12-09
+ * @date 2024-12-11
  */
 @Validated
 @RequiredArgsConstructor
@@ -35,6 +35,15 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 public class TCategoryController extends BaseController {
 
     private final ITCategoryService tCategoryService;
+
+    /**
+     * 查询文章分类
+     * @return
+     */
+    @GetMapping("/articlesSelect")
+    public R<List<TCategoryVo>> articlesSelect() {
+        return R.ok(tCategoryService.articlesSelect());
+    }
 
     /**
      * 查询文章分类列表

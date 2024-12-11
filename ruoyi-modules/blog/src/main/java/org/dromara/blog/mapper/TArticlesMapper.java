@@ -1,5 +1,6 @@
 package org.dromara.blog.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.blog.domain.TArticles;
 import org.dromara.blog.domain.vo.TArticlesVo;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
@@ -12,4 +13,5 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
  */
 public interface TArticlesMapper extends BaseMapperPlus<TArticles, TArticlesVo> {
 
+    Long selectCategoryCount(@Param("category") String category);
 }

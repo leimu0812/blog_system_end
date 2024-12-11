@@ -1,5 +1,8 @@
 package org.dromara.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.dromara.blog.domain.TTags;
+import org.dromara.blog.mapper.TSiteStatsMapper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -23,13 +26,20 @@ import java.util.Collection;
  * 文章分类Service业务层处理
  *
  * @author LiuJinYu
- * @date 2024-12-09
+ * @date 2024-12-11
  */
 @RequiredArgsConstructor
 @Service
 public class TCategoryServiceImpl implements ITCategoryService {
 
     private final TCategoryMapper baseMapper;
+
+    private final TSiteStatsMapper siteStatsMapper;
+
+    @Override
+    public List<TCategoryVo> articlesSelect() {
+        return baseMapper.getCategory();
+    }
 
     /**
      * 查询文章分类
@@ -38,7 +48,7 @@ public class TCategoryServiceImpl implements ITCategoryService {
      * @return 文章分类
      */
     @Override
-    public TCategoryVo queryById(Long categoryId){
+    public TCategoryVo queryById(Long categoryId) {
         return baseMapper.selectVoById(categoryId);
     }
 
@@ -72,7 +82,7 @@ public class TCategoryServiceImpl implements ITCategoryService {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<TCategory> lqw = Wrappers.lambdaQuery();
         lqw.like(StringUtils.isNotBlank(bo.getCategoryName()), TCategory::getCategoryName, bo.getCategoryName());
-        lqw.eq(bo.getSortOrder() != null, TCategory::getSortOrder, bo.getSortOrder());
+        lqw.eq(StringUtils.isNotBlank(bo.getDescription()), TCategory::getDescription, bo.getDescription());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), TCategory::getStatus, bo.getStatus());
         return lqw;
     }
@@ -90,6 +100,11 @@ public class TCategoryServiceImpl implements ITCategoryService {
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setCategoryId(add.getCategoryId());
+            // 分类新增成功，计数，统计数量表对应的内容添加
+            QueryWrapper<TCategory> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("status", 1);
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper), "分类");
+
         }
         return flag;
     }
@@ -110,8 +125,8 @@ public class TCategoryServiceImpl implements ITCategoryService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(TCategory entity){
-        //TODO 做一些数据校验,如唯一约束
+    private void validEntityBeforeSave(TCategory entity) {
+        // TODO 做一些数据校验,如唯一约束
     }
 
     /**
@@ -123,9 +138,12 @@ public class TCategoryServiceImpl implements ITCategoryService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
+        boolean flag = baseMapper.deleteByIds(ids) > 0;
+        if (flag) {
+            QueryWrapper<TCategory> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("status", 1);
+            siteStatsMapper.updateTagNumber(baseMapper.selectCount(queryWrapper), "分类");
         }
-        return baseMapper.deleteByIds(ids) > 0;
+        return flag;
     }
 }
