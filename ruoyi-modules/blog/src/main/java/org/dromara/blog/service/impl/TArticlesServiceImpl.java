@@ -222,6 +222,10 @@ public class TArticlesServiceImpl implements ITArticlesService {
             queryWrapper.eq("tag_id", Long.parseLong(tag));
             Long l = articleTagsMapper.selectCount(queryWrapper);
             tagsMapper.updateCount(Long.parseLong(tag), l);
+            // 获取分类名称，统计该分类名称数量
+            String category = bo.getCategory();
+            Long i = baseMapper.selectCategoryCount(category);
+            categoryMapper.updateArticleCount(category, i);
         }
         return baseMapper.updateById(update) > 0;
     }
